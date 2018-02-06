@@ -1,0 +1,25 @@
+package com.iqmsoft;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.jaxrs.JAXRSArchive;
+
+import com.iqmsoft.rest.CORSFilter;
+import com.iqmsoft.rest.Resource;
+
+import java.util.stream.Stream;
+
+public class App {
+
+  public static void main(String[] args) throws Exception {
+
+    final Swarm swarm = new Swarm();
+    final JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
+    final boolean recursive = true;
+
+    deployment.addPackages(recursive, App.class.getPackage());
+    Stream.of(Resource.class, CORSFilter.class)
+          .forEach(deployment::addClass);
+    swarm.start(deployment);
+  }
+}
